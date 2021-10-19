@@ -23,7 +23,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-line_bot_api = LineBotApi(getenv("TOKEN"))
+bot = LineBotApi(getenv("TOKEN"))
 handler = WebhookHandler(getenv("WEBHOOK"))
 
 
@@ -34,7 +34,7 @@ def init():
 
 @app.route("/callback", methods=["POST"])
 def callback():
-
+    db.create_all()
     # get X-Line-Signature header value
     signature = request.headers["X-Line-Signature"]
 
@@ -64,48 +64,40 @@ def handle_message(event):
         try:
             debtor, lender, money = message.split()
         except ValueError:
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text="Invalid input.")
-            )
+            bot.reply_message(event.reply_token, TextSendMessage(text="Invalid input."))
         else:
             if add_record(debtor, lender, money):
-                line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage(text="OK.")
-                )
+                bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
             else:
-                line_bot_api.reply_message(
+                bot.reply_message(
                     event.reply_token, TextSendMessage(text="Error when storing.")
                 )
     if command == "remove":
         try:
             id = int(message)
         except ValueError:
-            line_bot_api.reply_message(
+            bot.reply_message(
                 event.reply_token, TextSendMessage(text="An integer is required.")
             )
         else:
             if remove_record(id):
-                line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage(text="OK.")
-                )
+                bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
             else:
-                line_bot_api.reply_message(
+                bot.reply_message(
                     event.reply_token, TextSendMessage(text="Error when removing.")
                 )
     if command == "done":
         try:
             id = int(message)
         except ValueError:
-            line_bot_api.reply_message(
+            bot.reply_message(
                 event.reply_token, TextSendMessage(text="An integer is required.")
             )
         else:
             if done_record(id):
-                line_bot_api.reply_message(
-                    event.reply_token, TextSendMessage(text="OK.")
-                )
+                bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
             else:
-                line_bot_api.reply_message(
+                bot.reply_message(
                     event.reply_token, TextSendMessage(text="Error when processing.")
                 )
     if command == "list":
@@ -113,7 +105,9 @@ def handle_message(event):
         records = list_records()
         for record in records:
             msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=msg))
+        if msg == "":
+            msg = "No record."
+        bot.reply_message(event.reply_token, TextSendMessage(text=msg))
     if command == "summary":
         summary = calculate_summary(message)
         msg = ""
@@ -122,7 +116,7 @@ def handle_message(event):
                 msg += f"{message}: {money} -> {username}"
             elif money < 0:
                 msg += f"{username}: {-1 * money} -> {message}"
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=msg))
+        bot.reply_message(event.reply_token, TextSendMessage(text=msg))
 
 
 if __name__ == "__main__":
