@@ -34,7 +34,6 @@ def init():
 
 @app.route("/callback", methods=["POST"])
 def callback():
-    db.create_all()
     # get X-Line-Signature header value
     signature = request.headers["X-Line-Signature"]
 
