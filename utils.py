@@ -2,9 +2,14 @@ from database import db, Records
 
 
 def parse_msg(msg):
-    i = msg.index(" ")
-    command = msg[:i]
-    text = msg[i:]
+    try:
+        i = msg.index(" ")
+    except ValueError:
+        command = msg
+        text = ""
+    else:
+        command = msg[:i]
+        text = msg[i:]
     if command.startswith("/"):
         return command[1:], text
     return None
