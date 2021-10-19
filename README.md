@@ -4,8 +4,8 @@
 Warmup for hackathon
 
 ## usage
-`/add <debtor> <lender> <money>` - Add one record.
-`/remove <record_id>` - Remove specified record.
-`/done <record_id>` - Done specified record. The record will not be shown in summary when it is marked `done`.
-`/summary <username>` - Show specified user's summary.
-`/list` - Show all records.
+`/add <debtor> <lender> <money>` - Add one record.  
+`/remove <record_id>` - Remove specified record.  
+`/done <record_id>` - Done specified record. The record will not be shown in summary when it is marked `done`.  
+`/summary <username>` - Show specified user's summary.  
+`/list` - Show all records.  
