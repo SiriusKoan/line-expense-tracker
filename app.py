@@ -8,10 +8,12 @@ from linebot.models import (
     TextMessage,
     TextSendMessage,
 )
+from config import Config
 from database import db
 from utils import add_record, done_record, list_records, parse_msg, remove_record
 
 app = Flask(__name__)
+app.config.from_object(Config)
 db.init_app(app)
 
 line_bot_api = LineBotApi(getenv("TOKEN"))
