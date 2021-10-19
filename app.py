@@ -20,6 +20,11 @@ line_bot_api = LineBotApi(getenv("TOKEN"))
 handler = WebhookHandler(getenv("WEBHOOK"))
 
 
+@app.before_first_request
+def init():
+    db.create_all()
+
+
 @app.route("/callback", methods=["POST"])
 def callback():
 

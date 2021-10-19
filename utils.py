@@ -33,7 +33,7 @@ def remove_record(id):
 def done_record(id):
     try:
         record = Records.query.filter_by(id=id)
-        record.status = True
+        record.update({"status": True})
         db.session.commit()
         return True
     except:
