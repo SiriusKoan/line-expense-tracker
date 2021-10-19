@@ -116,6 +116,9 @@ def handle_message(event):
                 msg += f"{message}: {money} -> {username}"
             elif money < 0:
                 msg += f"{username}: {-1 * money} -> {message}"
+        if msg == "":
+            msg = "No record."
+        print(msg)
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
 
 
