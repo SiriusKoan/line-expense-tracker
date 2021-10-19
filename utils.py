@@ -58,3 +58,19 @@ def list_records():
         for record in records
     ]
     return records
+
+def calculate_summary(username):
+    record_debtor = Records.query.filter_by(debtor=username).filter_by(status=False).all()
+    record_lender = Records.query.filter_by(lender=username).filter_by(status=False).all()
+    people = {}
+    for record in record_debtor:
+        if record.lender in people:
+            people[record.lender] += record.money
+        else:
+            people[record.lender] = record.money
+    for record in record_lender:
+        if record.debtor in people:
+            people[record.debtor] -= record.money
+        else:
+            people[record.debtor] = -1 * record.money
+    return people

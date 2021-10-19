@@ -10,7 +10,14 @@ from linebot.models import (
 )
 from config import Config
 from database import db
-from utils import add_record, done_record, list_records, parse_msg, remove_record
+from utils import (
+    add_record,
+    calculate_summary,
+    done_record,
+    list_records,
+    parse_msg,
+    remove_record,
+)
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -106,6 +113,15 @@ def handle_message(event):
         records = list_records()
         for record in records:
             msg += f"id: {record.id}, status: {record.status}, {record.debtor}: {record.money} -> {record.lender}\n"
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=msg))
+    if command == "summary":
+        summary = calculate_summary(message)
+        msg = ""
+        for username, money in summary.items():
+            if money > 0:
+                msg += f"{message}: {money} -> {username}"
+            elif money < 0:
+                msg += f"{username}: {-1 * money} -> {message}"
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=msg))
 
 
