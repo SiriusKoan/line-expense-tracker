@@ -35,6 +35,15 @@ def remove_record(id):
         return False
 
 
+def remove_all_records():
+    try:
+        db.session.query(Records).delete()
+        db.session.commit()
+        return True
+    except:
+        return False
+
+
 def done_record(id):
     try:
         record = Records.query.filter_by(id=id)
@@ -44,6 +53,14 @@ def done_record(id):
     except:
         return False
 
+def done_all_records():
+    try:
+        record = Records.query.filter_by(status=False)
+        record.update({"status": True})
+        db.session.commit()
+        return True
+    except:
+        return False
 
 def list_records():
     records = Records.query.all()

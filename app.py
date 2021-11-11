@@ -1,5 +1,4 @@
 from os import getenv
-from re import L
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -13,9 +12,11 @@ from database import db
 from utils import (
     add_record,
     calculate_summary,
+    done_all_records,
     done_record,
     list_records,
     parse_msg,
+    remove_all_records,
     remove_record,
 )
 
@@ -85,6 +86,13 @@ def handle_message(event):
                 bot.reply_message(
                     event.reply_token, TextSendMessage(text="Error when removing.")
                 )
+    if command == "remove_all":
+        if remove_all_records():
+            bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
+        else:
+            bot.reply_message(
+                event.reply_token, TextSendMessage(text="Error when removing.")
+            )
     if command == "done":
         try:
             id = int(message)
@@ -99,6 +107,13 @@ def handle_message(event):
                 bot.reply_message(
                     event.reply_token, TextSendMessage(text="Error when processing.")
                 )
+    if command == "done_all":
+        if done_all_records():
+            bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
+        else:
+            bot.reply_message(
+                event.reply_token, TextSendMessage(text="Error when processing.")
+            )
     if command == "list":
         msg = ""
         records = list_records()
@@ -112,9 +127,9 @@ def handle_message(event):
         msg = ""
         for username, money in summary.items():
             if money > 0:
-                msg += f"{message}: {money} -> {username}"
+                msg += f"{message}: {money} -> {username}\n"
             elif money < 0:
-                msg += f"{username}: {-1 * money} -> {message}"
+                msg += f"{username}: {-1 * money} -> {message}\n"
         print(msg)
         if msg == "":
             msg = "No record."
