@@ -11,7 +11,7 @@ def parse_msg(msg):
         command = msg[:i]
         text = msg[i:]
     if command.startswith("/"):
-        return command[1:], text
+        return command[1:].strip(), text.strip()
     return None
 
 
