@@ -122,6 +122,22 @@ def handle_message(event):
         if msg == "":
             msg = "No record."
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
+    if command == "list_done":
+        msg = ""
+        records = list_records(done=True)
+        for record in records:
+            msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
+        if msg == "":
+            msg = "No record."
+        bot.reply_message(event.reply_token, TextSendMessage(text=msg))
+    if command == "list_undone":
+        msg = ""
+        records = list_records(done=False)
+        for record in records:
+            msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
+        if msg == "":
+            msg = "No record."
+        bot.reply_message(event.reply_token, TextSendMessage(text=msg))
     if command == "summary":
         summary = calculate_summary(message)
         msg = ""
