@@ -63,8 +63,8 @@ def done_all_records():
         return False
 
 def list_records(**filters):
-    records = Records.query.all()
-    records = records.filter_by(**filters)
+    records = Records.query
+    records = records.filter_by(**filters).all()
     records = [
         {
             "id": record.id,
