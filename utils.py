@@ -53,9 +53,9 @@ def done_record(id):
     except:
         return False
 
-def done_all_records():
+def done_all_records(**filters):
     try:
-        record = Records.query.filter_by(status=False)
+        record = Records.query.filter_by(status=False, **filters)
         record.update({"status": True})
         db.session.commit()
         return True

@@ -10,6 +10,7 @@ class Records(db.Model):
     lender = db.Column(db.String, nullable=False)
     money = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Boolean, default=False)  # True means done
+    timestamp = db.Column(db.DateTime, default=db.func.now())
 
     def __init__(self, debtor, lender, money) -> None:
         self.debtor = debtor

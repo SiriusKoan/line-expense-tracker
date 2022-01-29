@@ -5,10 +5,10 @@
 ## usage
 `/add <debtor> <lender> <money>` - Add one record.  
 `/remove <record_id>` - Remove specified record.  
-`/remove_all` - Remove all records.  
+`/remove_all [filter]` - Remove all records.  
 `/done <record_id>` - Done specified record. The record will not be shown in summary when it is marked `done`.  
-`/done_all` - Done all records.  
+`/done_all [filter]` - Done all records.  
 `/summary <username>` - Show specified user's summary.  
-`/list` - Show all records.  
-`/list_done` - Show all done records.  
-`/list_undone` - Show all undone records.
+`/list [filter]` - Show all records.  
+`/list_done [filter]` - Show all done records.  
+`/list_undone [filter]` - Show all undone records.

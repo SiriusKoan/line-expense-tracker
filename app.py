@@ -67,13 +67,13 @@ def handle_message(event):
                 text="""
                 /add <debtor> <lender> <money> - Add one record.
                 /remove <record_id> - Remove specified record.
-                /remove_all - Remove all records.
+                /remove_all [filter] - Remove all records.
                 /done <record_id> - Done specified record. The record will not be shown in summary when it is marked done.
-                /done_all - Done all records.
+                /done_all [filter] - Done all records.
                 /summary <username> - Show specified user's summary.
-                /list - Show all records.
-                /list_done - Show all done records.
-                /list_undone - Show all undone records.
+                /list [filter] - Show all records.
+                /list_done [filter] - Show all done records.
+                /list_undone [filter] - Show all undone records.
                 """
             ),
         )
@@ -104,7 +104,7 @@ def handle_message(event):
                     event.reply_token, TextSendMessage(text="Error when removing.")
                 )
     if command == "remove_all":
-        if remove_all_records():
+        if remove_all_records(debtor=message) and remove_all_records(lender=message):
             bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
         else:
             bot.reply_message(
@@ -125,7 +125,7 @@ def handle_message(event):
                     event.reply_token, TextSendMessage(text="Error when processing.")
                 )
     if command == "done_all":
-        if done_all_records():
+        if done_all_records(debtor=message) and done_all_records(lender=message):
             bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
         else:
             bot.reply_message(
@@ -133,7 +133,10 @@ def handle_message(event):
             )
     if command == "list":
         msg = ""
-        records = list_records()
+        if message:
+            records = list_records(debtor=message) + list_records(lender=message)
+        else:
+            records = list_records()
         for record in records:
             msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
         if msg == "":
@@ -141,7 +144,10 @@ def handle_message(event):
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
     if command == "list_done":
         msg = ""
-        records = list_records(done=True)
+        if message:
+            records = list_records(done=True, debtor=message) + list_records(done=True, lender=message)
+        else:
+            records = list_records(done=True)
         for record in records:
             msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
         if msg == "":
@@ -149,7 +155,10 @@ def handle_message(event):
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
     if command == "list_undone":
         msg = ""
-        records = list_records(done=False)
+        if message:
+            records = list_records(done=False, debtor=message) + list_records(done=False, lender=message)
+        else:
+            records = list_records(done=False)
         for record in records:
             msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
         if msg == "":
