@@ -104,7 +104,11 @@ def handle_message(event):
                     event.reply_token, TextSendMessage(text="Error when removing.")
                 )
     if command == "remove_all":
-        if remove_all_records(debtor=message) and remove_all_records(lender=message):
+        if message:
+            removal = remove_all_records(debtor=message) and remove_all_records(lender=message)
+        else:
+            removal = remove_all_records()
+        if removal:
             bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
         else:
             bot.reply_message(
@@ -125,7 +129,11 @@ def handle_message(event):
                     event.reply_token, TextSendMessage(text="Error when processing.")
                 )
     if command == "done_all":
-        if done_all_records(debtor=message) and done_all_records(lender=message):
+        if message:
+            done = done_all_records(debtor=message) and done_all_records(lender=message)
+        else:
+            done = done_all_records()
+        if done:
             bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
         else:
             bot.reply_message(

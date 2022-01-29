@@ -72,6 +72,7 @@ def list_records(**filters):
             "lender": record.lender,
             "money": record.money,
             "status": "Done" if record.status else "Not done yet",
+            "timestamp": record.timestamp.strftime("%Y-%m-%d"),
         }
         for record in records
     ]
