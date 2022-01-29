@@ -146,7 +146,7 @@ def handle_message(event):
         else:
             records = list_records()
         for record in records:
-            msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
+            msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
             msg = "No record."
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
@@ -157,7 +157,7 @@ def handle_message(event):
         else:
             records = list_records(done=True)
         for record in records:
-            msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
+            msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
             msg = "No record."
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
@@ -168,7 +168,7 @@ def handle_message(event):
         else:
             records = list_records(done=False)
         for record in records:
-            msg += f"id: {record['id']}, status: {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}\n"
+            msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
             msg = "No record."
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
