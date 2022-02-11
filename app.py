@@ -153,9 +153,9 @@ def handle_message(event):
     if command == "list_done":
         msg = ""
         if message:
-            records = list_records(done=True, debtor=message) + list_records(done=True, lender=message)
+            records = list_records(status=True, debtor=message) + list_records(status=True, lender=message)
         else:
-            records = list_records(done=True)
+            records = list_records(status=True)
         for record in records:
             msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
@@ -164,9 +164,9 @@ def handle_message(event):
     if command == "list_undone":
         msg = ""
         if message:
-            records = list_records(done=False, debtor=message) + list_records(done=False, lender=message)
+            records = list_records(status=False, debtor=message) + list_records(status=False, lender=message)
         else:
-            records = list_records(done=False)
+            records = list_records(status=False)
         for record in records:
             msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
