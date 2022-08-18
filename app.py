@@ -60,7 +60,7 @@ def handle_message(event):
         command, message = parse_msg(event.message.text)
     else:
         return False
-    room = event.source["groupId"] if event.source["type"] == "group" else event.source["userId"]
+    room = event.source.groupId if event.source.type == "group" else event.source.userId
     if command == "help":
         bot.reply_message(
             event.reply_token,
