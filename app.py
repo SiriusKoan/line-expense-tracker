@@ -60,6 +60,7 @@ def handle_message(event):
         command, message = parse_msg(event.message.text)
     else:
         return False
+    room = event.source["groupId"] if event.source["type"] == "group" else event.source["userId"]
     if command == "help":
         bot.reply_message(
             event.reply_token,
@@ -84,7 +85,7 @@ def handle_message(event):
             bot.reply_message(event.reply_token, TextSendMessage(text="Invalid input."))
         else:
             print(event.source)
-            if add_record(debtor, lender, money):
+            if add_record(room, debtor, lender, money):
                 bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
             else:
                 bot.reply_message(
@@ -98,7 +99,7 @@ def handle_message(event):
                 event.reply_token, TextSendMessage(text="An integer is required.")
             )
         else:
-            if remove_record(id):
+            if remove_record(room, id):
                 bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
             else:
                 bot.reply_message(
@@ -106,9 +107,9 @@ def handle_message(event):
                 )
     if command == "remove_all":
         if message:
-            removal = remove_all_records(debtor=message) and remove_all_records(lender=message)
+            removal = remove_all_records(room, debtor=message) and remove_all_records(room, lender=message)
         else:
-            removal = remove_all_records()
+            removal = remove_all_records(room)
         if removal:
             bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
         else:
@@ -123,7 +124,7 @@ def handle_message(event):
                 event.reply_token, TextSendMessage(text="An integer is required.")
             )
         else:
-            if done_record(id):
+            if done_record(room, id):
                 bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
             else:
                 bot.reply_message(
@@ -131,9 +132,9 @@ def handle_message(event):
                 )
     if command == "done_all":
         if message:
-            done = done_all_records(debtor=message) and done_all_records(lender=message)
+            done = done_all_records(room, debtor=message) and done_all_records(room, lender=message)
         else:
-            done = done_all_records()
+            done = done_all_records(room)
         if done:
             bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
         else:
@@ -143,9 +144,9 @@ def handle_message(event):
     if command == "list":
         msg = ""
         if message:
-            records = list_records(debtor=message) + list_records(lender=message)
+            records = list_records(room, debtor=message) + list_records(room, lender=message)
         else:
-            records = list_records()
+            records = list_records(room)
         for record in records:
             msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
@@ -154,9 +155,9 @@ def handle_message(event):
     if command == "list_done":
         msg = ""
         if message:
-            records = list_records(status=True, debtor=message) + list_records(status=True, lender=message)
+            records = list_records(room, status=True, debtor=message) + list_records(room, status=True, lender=message)
         else:
-            records = list_records(status=True)
+            records = list_records(room, status=True)
         for record in records:
             msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
@@ -165,16 +166,16 @@ def handle_message(event):
     if command == "list_undone":
         msg = ""
         if message:
-            records = list_records(status=False, debtor=message) + list_records(status=False, lender=message)
+            records = list_records(room, status=False, debtor=message) + list_records(room, status=False, lender=message)
         else:
-            records = list_records(status=False)
+            records = list_records(room, status=False)
         for record in records:
             msg += f"id: {record['id']}, {record['status']}, {record['debtor']}: {record['money']} -> {record['lender']}, {record['timestamp']}\n"
         if msg == "":
             msg = "No record."
         bot.reply_message(event.reply_token, TextSendMessage(text=msg))
     if command == "summary":
-        summary = calculate_summary(message)
+        summary = calculate_summary(room, message)
         msg = ""
         for username, money in summary.items():
             if money > 0:

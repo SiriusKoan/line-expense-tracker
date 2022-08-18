@@ -15,9 +15,9 @@ def parse_msg(msg):
     return None
 
 
-def add_record(debtor, lender, money):
+def add_record(room, debtor, lender, money):
     try:
-        record = Records(debtor, lender, money)
+        record = Records(debtor, lender, money, room)
         db.session.add(record)
         db.session.commit()
         return True
@@ -25,9 +25,9 @@ def add_record(debtor, lender, money):
         return False
 
 
-def remove_record(id):
+def remove_record(room, id):
     try:
-        record = Records.query.filter_by(id=id).first()
+        record = Records.query.filter_by(id=id, room=room).first()
         db.session.delete(record)
         db.session.commit()
         return True
@@ -35,36 +35,36 @@ def remove_record(id):
         return False
 
 
-def remove_all_records():
+def remove_all_records(room):
     try:
-        db.session.query(Records).delete()
+        Records.query.filter_by(room=room).delete()
         db.session.commit()
         return True
     except:
         return False
 
 
-def done_record(id):
+def done_record(room, id):
     try:
-        record = Records.query.filter_by(id=id)
+        record = Records.query.filter_by(id=id, room=room)
         record.update({"status": True})
         db.session.commit()
         return True
     except:
         return False
 
-def done_all_records(**filters):
+def done_all_records(room, **filters):
     try:
-        record = Records.query.filter_by(status=False, **filters)
+        record = Records.query.filter_by(room=room, status=False, **filters)
         record.update({"status": True})
         db.session.commit()
         return True
     except:
         return False
 
-def list_records(**filters):
+def list_records(room, **filters):
     records = Records.query
-    records = records.filter_by(**filters).all()
+    records = records.filter_by(room=room, **filters).all()
     records = [
         {
             "id": record.id,
@@ -79,12 +79,12 @@ def list_records(**filters):
     return records
 
 
-def calculate_summary(username):
+def calculate_summary(room, username):
     record_debtor = (
-        Records.query.filter_by(debtor=username).filter_by(status=False).all()
+        Records.query.filter_by(room=room, debtor=username, status=False).all()
     )
     record_lender = (
-        Records.query.filter_by(lender=username).filter_by(status=False).all()
+        Records.query.filter_by(room=room, lender=username, status=False).all()
     )
     people = {}
     for record in record_debtor:
