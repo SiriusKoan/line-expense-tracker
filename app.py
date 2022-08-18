@@ -83,6 +83,7 @@ def handle_message(event):
         except ValueError:
             bot.reply_message(event.reply_token, TextSendMessage(text="Invalid input."))
         else:
+            print(event.source)
             if add_record(debtor, lender, money):
                 bot.reply_message(event.reply_token, TextSendMessage(text="OK."))
             else:
